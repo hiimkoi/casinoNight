@@ -18,12 +18,9 @@ class Card:
     def _init_(self, rank, suit):
         self.rank = rank
         self.suit = suit
-    def __str__(self):
-        return "%s of %s" % (self.rank, self.suit)
 
-    def print(self):
+    def __str__(self):  # redefining string method for use of printing card name
         return "%s of %s" % (self.rank, self.suit)
-
 
 
 def makeDeck():
@@ -61,9 +58,9 @@ dealer = Dealer(deck.pop())
 print("Dealer has: %s" % dealer.card)
 
 #generate random money amount $500-2000
-print(random.random(500, 2001))
 
-
+money = float(random.randint(500, 2001))
+print(money)
 
 
 # i = 1
