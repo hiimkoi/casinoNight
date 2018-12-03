@@ -37,6 +37,19 @@ class Card:  # Class Card created for use in Deck of cards
     def __str__(self):  # redefining string method for use of printing card name
         return "%s of %s" % (self.rank, self.suit)
 
+    def getValue(self):
+        if not isinstance(self.rank, str):
+            return self.rank - 1
+        else:
+            if self.rank == "Jack":
+                return 10
+            elif self.rank == "Queen":
+                return 11
+            elif self.rank == "King":
+                return 12
+            else: #case for Ace
+                return 13
+
 
 def makeDeck():  # method builds 6 deck of cards for playing a game of Casino War
     ranks = [_ for _ in range(2, 11)] + ["Jack", "Queen", "King", "Ace"]
@@ -54,14 +67,53 @@ def makeDeck():  # method builds 6 deck of cards for playing a game of Casino Wa
 
 
 class Dealer:  # Dealer class contains the dealer's card
-    def __init__(self, card):
+    def __init__(self):
+        self.card = None
+
+    def __str__(self):
+        return "Dealer has %s" % self.card
+
+    def assignCard(self, card):
         self.card = card
+
+    #def play(self, card):
+
+
+
+
 
 
 class Player:  # Player class contains a corresponding players card and how much money they have
-    def __init__(self, card, money):
+
+    def __init__(self, id):
+        self.id = id
+        self.money = getMoney()
+        self.bet = 0
+        self.card = None
+
+    def __str__(self):
+        return "Player #%i has %s, and $%.2f" % (self.id, self.card, self.money)
+
+    def makeBet(self):
+        betAmount = random.randint(1, self.money + 1)
+        self.money -= betAmount
+        self.bet = betAmount
+        print("Player #%i has made a $%.2f bet" % (self.id, self.bet))
+
+    def hasBusted(self):
+        if self.money <= 0:
+            print("Player #%i has busted!" % self.id)
+            return True
+        else:
+            return False
+
+    def assignCard(self, card):
         self.card = card
-        self.money = money
+
+def getMoney(): #method generates a random amount of money from $500 - $2000
+    return float(random.randint(500, 2001))
+
+
 
 
 def playGame():  # main method that plays the game
@@ -70,14 +122,51 @@ def playGame():  # main method that plays the game
     random.shuffle(deck)  # shuffles deck of cards NOTE: consider moving this to makeDeck
 
     # round 1
-    dealer = Dealer(deck.pop())
+    dealer = Dealer()
 
-    print("Dealer has: %s" % dealer.card)
+    #print("Dealer has: %s" % dealer.card)
+
 
     # generate random money amount $500-2000
 
-    money = float(random.randint(500, 2001))
-    print(money)
+    # money = float(random.randint(500, 2001))
+    # print(money)
+
+    #initialize 3 players
+
+    theHouse = 0
+
+    players = []
+    for i in range(3):
+        players.append(Player(i + 1))
+        #print(players[i])
+
+
+    numOfRounds = 1
+    while(len(players) > 1):
+
+        print("Start of round #%i" % numOfRounds)
+        dealer.assignCard(deck.pop())
+        print(dealer)
+
+        for player in players:
+            player.makeBet()
+            player.assignCard(deck.pop())
+            print(player)
+
+
+
+
+            if player.hasBusted():
+                players.remove(player)
+
+        print("End of round #%i\n" % numOfRounds)
+        numOfRounds += 1
+
+
+
+
+
 
     # i = 1
     # for card in deck:
